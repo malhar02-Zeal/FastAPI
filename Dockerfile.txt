@@ -1,0 +1,20 @@
+FROM python:3.11.9-slim
+
+# Set up for AWS Lambda compatibility
+WORKDIR /var/task
+ENV PYTHONPATH=/var/task
+
+# Copy function code
+COPY main.py .
+COPY Sentiment.py .
+
+# Copy requirements file and install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# AWS Lambda expects a handler
+ENTRYPOINT [ "python", "-m", "awslambdaric" ]
+CMD [ "main.handler" ]
+
+# Install AWS Lambda Runtime Interface Client
+RUN pip install awslambdaric
